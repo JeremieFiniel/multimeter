@@ -11,6 +11,7 @@ client = InfluxDBClient(host='localhost', port='8086')
 client.switch_database('multimeter')
 
 ina = INA219(SHUNT_OHMS, MAX_EXPECTED_AMPS)
+ina.wake()
 
 def read():
 	ina.configure(ina.RANGE_16V)
@@ -44,5 +45,5 @@ if __name__ == "__main__":
 	while True:
 		read()
 		#ina.sleep()
-		time.sleep(10)
+		time.sleep(60)
 		#ina.wake()
