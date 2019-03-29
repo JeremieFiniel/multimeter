@@ -3,15 +3,10 @@ from ina219 import INA219
 from ina219 import DeviceRangeError
 from influxdb import InfluxDBClient
 import time
+import sys
 
 SHUNT_OHMS = 0.1
-MAX_EXPECTED_AMPS = 0.2
-
-client = InfluxDBClient(host='localhost', port='8086')
-client.switch_database('multimeter')
-
-ina = INA219(SHUNT_OHMS, MAX_EXPECTED_AMPS)
-ina.wake()
+MAX_EXPECTED_AMPS = 0.8
 
 def read():
 	ina.configure(ina.RANGE_16V)
@@ -42,8 +37,13 @@ def read():
 	client.write_points(json)
 
 if __name__ == "__main__":
+	client = InfluxDBClient(host='localhost', port='8086')
+	client.switch_database('multimeter')
+
+	ina = INA219(SHUNT_OHMS, MAX_EXPECTED_AMPS)
+	ina.wake()
 	while True:
 		read()
 		#ina.sleep()
-		time.sleep(60)
+		time.sleep(int(sys.argv[1]))
 		#ina.wake()
